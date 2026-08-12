@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EMAIL QUEST - Ultimate Edition</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Retro Pixel Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        pixel: ['"Press Start 2P"', 'monospace'],
+                    },
+                    colors: {
+                        mc: {
+                            dirt: '#866043',
+                            grass: '#5c8e32',
+                            stone: '#737373',
+                            wood: '#9c6f44',
+                            woodDark: '#5c3e1e',
+                            plank: '#c29d62',
+                            gold: '#fcc729',
+                            sky: '#5c94fc',
+                            dialog: '#181425'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            image-rendering: pixelated;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background-color: #111116;
+            background-image: 
+                radial-gradient(#222533 15%, transparent 16%),
+                radial-gradient(#222533 15%, transparent 16%);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Retro 3D Block Buttons */
+        .mc-button {
+            background-color: #727272;
+            border-top: 4px solid #b4b4b4;
+            border-left: 4px solid #b4b4b4;
+            border-right: 4px solid #373737;
+            border-bottom: 4px solid #373737;
+            color: #ffffff;
+            text-shadow: 2px 2px #000000;
+            box-shadow: inset -2px -2px 0px #222222;
+            transition: all 0.05s ease;
+            cursor: pointer;
+        }
+
+        .mc-button:hover { background-color: #8b8b8b; }
+        .mc-button:active {
+            border-top: 4px solid #373737;
+            border-left: 4px solid #373737;
+            border-right: 4px solid #b4b4b4;
+            border-bottom: 4px solid #b4b4b4;
+            transform: translate(2px, 2px);
+        }
+
+        .mc-button-gold {
+            background-color: #f3a81a;
+            border-top: 4px solid #fde182;
+            border-left: 4px solid #fde182;
+            border-right: 4px solid #945802;
+            border-bottom: 4px solid #945802;
+            color: #241400;
+            text-shadow: none;
+        }
+        .mc-button-gold:hover { background-color: #fbc043; }
+
+        .mc-button-green {
+            background-color: #388e3c;
+            border-top: 4px solid #81c784;
+            border-left: 4px solid #81c784;
+            border-right: 4px solid #1b5e20;
+            border-bottom: 4px solid #1b5e20;
+            color: #ffffff;
+        }
+        .mc-button-green:hover { background-color: #43a047; }
+
+        .mc-box {
+            background-color: #211d1d;
+            border: 4px solid #4a3e3d;
+            box-shadow: 0 0 0 4px #0f0d0d, inset 0 0 0 4px #332a29;
+        }
+
+        .mc-panel-wood {
+            background-color: #9c6f44;
+            border-top: 6px solid #d2a16d;
+            border-left: 6px solid #d2a16d;
+            border-right: 6px solid #5c3e1e;
+            border-bottom: 6px solid #5c3e1e;
+            box-shadow: inset 0 0 0 4px #78522d;
+        }
+
+        .mc-panel-paper {
+            background-color: #f7e8c3;
+            border: 4px solid #c4ab7a;
+            color: #221c11;
+            box-shadow: inset 0 0 0 2px #fff6df;
+        }
+
+        .mc-slot {
+            background-color: #8b8b8b;
+            border-top: 3px solid #373737;
+            border-left: 3px solid #373737;
+            border-right: 3px solid #ffffff;
+            border-bottom: 3px solid #ffffff;
+            cursor: pointer;
+        }
+
+        .text-pixel-shadow {
+            text-shadow: 3px 3px 0px #000000;
+        }
+
+        .chip-btn {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            background: #2563eb;
+            color: #ffffff;
+            border: 2px solid #60a5fa;
+            border-radius: 4px;
+            font-family: sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .chip-btn:hover {
+            transform: scale(1.05);
+            background: #1d4ed8;
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #1a1c23; border: 2px solid #373737; }
+        ::-webkit-scrollbar-thumb { background: #727272; border: 2px solid #b4b4b4; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between min-h-screen p-3 w-full">
+
+    <!-- DESKTOP COMPUTER CONTAINER (LANDSCAPE ASPECT RATIO) -->
+    <div class="w-[960px] h-[640px] mc-box rounded-lg flex flex-col justify-between p-4 relative overflow-hidden my-auto shadow-2xl">
+
+        <!-- HEADER BAR WITH HOMEPAGE BUTTON -->
+        <header class="flex justify-between items-center bg-mc-dialog border-b-4 border-slate-700 p-2.5 z-20">
+            <div class="flex items-center gap-3">
+                <button onclick="goToHomepage()" title="Return to Homepage" class="mc-button px-2.5 py-1.5 text-[10px] bg-sky-700 border-sky-400 flex items-center gap-1">
+                    🏠 HOME
+                </button>
+                <div class="w-8 h-8 bg-mc-gold flex items-center justify-center text-sm border-2 border-amber-200">
+                    ✉️
+                </div>
+                <div>
+                    <h1 class="text-xs sm:text-sm text-mc-gold text-pixel-shadow tracking-wider">EMAIL QUEST 2.0</h1>
+                    <p class="text-[9px] text-slate-400 mt-0.5">G-I-C-C-N ACADEMY EDITION</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Hearts / Lives Display -->
+                <div id="livesContainer" class="flex items-center gap-1.5 bg-rose-950/90 border-2 border-rose-600 px-3 py-1 text-[10px]">
+                    <span class="text-rose-300 font-bold">LIVES:</span>
+                    <span id="heartsDisplay" class="text-xs tracking-wider">❤️❤️❤️❤️❤️</span>
+                </div>
+
+                <!-- Player Info Box -->
+                <div id="playerPill" class="hidden flex items-center gap-2 bg-slate-800 border-2 border-slate-600 px-3 py-1.5 text-[10px]">
+                    <span id="playerAvatarDisplay">🏃</span>
+                    <span id="playerNameDisplay" class="text-amber-300 font-bold">STEVE</span>
+                </div>
+
+                <button id="soundToggleBtn" onclick="toggleSound()" class="mc-button text-[10px] px-2.5 py-1.5">
+                    🔊 SOUND
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN GAME SCREEN AREA -->
+        <div class="flex-1 my-2 relative flex items-center justify-center overflow-hidden">
+
+            <!-- SCREEN 1: WELCOME SCREEN -->
+            <section id="screenWelcome" class="w-full h-full flex flex-col items-center justify-center p-4 bg-slate-900/90 text-center relative overflow-hidden">
+                <div class="max-w-md w-full mc-panel-wood p-5 flex flex-col items-center space-y-4">
+                    <div class="text-4xl animate-bounce">✉️🏃🧪🧺</div>
+                    <h2 class="text-base text-mc-gold text-pixel-shadow">WELCOME TO EMAIL QUEST!</h2>
+                    <p class="text-[8px] text-amber-200 leading-relaxed font-sans">
+                        Become a Master Email Writer! Learn the <strong>G-I-C-C-N</strong> structure: Greeting, Introduction, Content, Closing, Name.
+                    </p>
+
+                    <form onsubmit="handleStartGame(event)" class="w-full space-y-3">
+                        <!-- Topic Selection -->
+                        <div>
+                            <label class="block text-[8px] text-amber-200 mb-1">SELECT EMAIL THEME:</label>
+                            <select id="topicSelect" onchange="updateThemePreviewNote()" class="w-full p-2 text-[9px] bg-slate-900 border-2 border-amber-400 text-mc-gold font-pixel rounded outline-none cursor-pointer">
+                                <option value="sports">🏃 School Sports Day (Mario Style)</option>
+                                <option value="picnic">🧺 Class Picnic Outing (Pacman Style)</option>
+                                <option value="science">🔬 Science Fair Exhibition (Snake Game Style)</option>
+                            </select>
+                            <p id="themePreviewNote" class="text-[7px] text-amber-300 font-sans mt-1">
+                                Theme: Mario Platformer Map style!
+                            </p>
+                        </div>
+
+                        <!-- Avatar Selection -->
+                        <div>
+                            <label class="block text-[8px] text-amber-200 mb-1">SELECT YOUR AVATAR:</label>
+                            <div class="flex justify-center gap-2">
+                                <button type="button" onclick="selectAvatar('🏃')" class="avatar-btn mc-button bg-amber-300 text-base p-2 rounded">🏃</button>
+                                <button type="button" onclick="selectAvatar('🤖')" class="avatar-btn mc-button text-base p-2 rounded">🤖</button>
+                                <button type="button" onclick="selectAvatar('🐱')" class="avatar-btn mc-button text-base p-2 rounded">🐱</button>
+                                <button type="button" onclick="selectAvatar('🧙')" class="avatar-btn mc-button text-base p-2 rounded">🧙</button>
+                            </div>
+                        </div>
+
+                        <!-- Player Name Input -->
+                        <div>
+                            <label for="playerName" class="block text-[8px] text-amber-200 mb-1">PLAYER NAME:</label>
+                            <input type="text" id="playerName" value="STEVE" maxlength="10" required
+                                class="w-full p-2 text-center text-[10px] bg-slate-900 border-2 border-amber-400 text-mc-gold font-pixel rounded uppercase outline-none focus:border-amber-200">
+                        </div>
+
+                        <button type="submit" class="mc-button mc-button-gold w-full py-2.5 text-[10px] mt-2">
+                            START GAME 🚀
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SCREEN 2: DYNAMIC INTERACTIVE STAGE MAP (MARIO / PACMAN / SNAKE) -->
+            <section id="screenMap" class="hidden w-full h-full flex flex-col justify-between p-2 bg-slate-900">
+                <div class="flex justify-between items-center bg-mc-wood p-1.5 border-b-2 border-mc-woodDark text-[8px]">
+                    <span id="mapHeaderTitle" class="text-mc-gold text-pixel-shadow">WORLD MAP - SELECT A STAGE</span>
+                    <span id="mapControlsHint" class="text-amber-200 font-sans">Use Arrow / WASD Keys or Onscreen Pad</span>
+                </div>
+
+                <!-- Interactive Game Canvas -->
+                <div class="relative flex-1 my-1 flex items-center justify-center">
+                    <canvas id="themeCanvas" width="800" height="380" class="w-full h-full cursor-pointer bg-mc-sky border-4 border-slate-800 rounded"></canvas>
+                </div>
+
+                <!-- Universal Controller Pad for Mario / Pacman / Snake -->
+                <div class="flex items-center justify-between bg-slate-950 p-2 border-t-2 border-slate-800">
+                    <div class="flex gap-1.5">
+                        <button onmousedown="handlePad('LEFT', true)" onmouseup="handlePad('LEFT', false)" ontouchstart="handlePad('LEFT', true)" ontouchend="handlePad('LEFT', false)" class="mc-button px-3 py-1.5 text-xs">⬅️</button>
+                        <button onmousedown="handlePad('RIGHT', true)" onmouseup="handlePad('RIGHT', false)" ontouchstart="handlePad('RIGHT', true)" ontouchend="handlePad('RIGHT', false)" class="mc-button px-3 py-1.5 text-xs">➡️</button>
+                        <button onmousedown="handlePad('UP', true)" onmouseup="handlePad('UP', false)" ontouchstart="handlePad('UP', true)" ontouchend="handlePad('UP', false)" class="mc-button px-3 py-1.5 text-xs">⬆️</button>
+                        <button onmousedown="handlePad('DOWN', true)" onmouseup="handlePad('DOWN', false)" ontouchstart="handlePad('DOWN', true)" ontouchend="handlePad('DOWN', false)" class="mc-button px-3 py-1.5 text-xs">⬇️</button>
+                    </div>
+
+                    <div id="mapSubtext" class="text-[7px] text-slate-300 font-sans text-center">
+                        Reach Stage 1, 2, or 3 targets to enter!
+                    </div>
+
+                    <button onmousedown="handlePad('JUMP', true)" onmouseup="handlePad('JUMP', false)" ontouchstart="handlePad('JUMP', true)" ontouchend="handlePad('JUMP', false)" id="jumpBtn" class="mc-button mc-button-gold px-4 py-1.5 text-xs">JUMP ⬆️</button>
+                </div>
+            </section>
+
+            <!-- SCREEN 3: STAGE 1 - EMAIL ANATOMY (TEXT MATCHING) -->
+            <section id="screenStage1" class="hidden w-full h-full flex flex-col justify-between p-3 bg-slate-900">
+                <div class="flex justify-between items-center bg-mc-wood p-2 border-b-2 border-mc-woodDark">
+                    <div class="flex gap-2">
+                        <button onclick="goToHomepage()" class="mc-button text-[8px] px-2 py-1 bg-sky-700 border-sky-400">🏠 HOME</button>
+                        <button onclick="showScreen('screenMap')" class="mc-button text-[8px] px-2 py-1">⬅ MAP</button>
+                    </div>
+                    <span class="text-[10px] text-mc-gold text-pixel-shadow">STAGE I - MATCH TEXT TO G-I-C-C-N PARTS</span>
+                    <button onclick="resetStage1()" class="mc-button text-[8px] px-2 py-1">RESET</button>
+                </div>
+
+                <div class="grid grid-cols-12 gap-3 my-auto h-[410px]">
+                    <!-- Left: Target Email Slots -->
+                    <div class="col-span-7 mc-panel-paper p-3 flex flex-col justify-between text-[8px] font-sans">
+                        
+                        <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                            <span class="font-pixel text-[7px] bg-indigo-900 text-amber-200 px-2 py-1 rounded flex-shrink-0 font-bold">G - GREETING</span>
+                            <button id="slot-greeting" onclick="targetSlotClicked('greeting')" class="mc-slot flex-1 min-h-[28px] text-[8px] text-slate-800 flex items-center px-2 text-left">
+                                [ DROP TEXT HERE ]
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                            <span class="font-pixel text-[7px] bg-indigo-900 text-amber-200 px-2 py-1 rounded flex-shrink-0 font-bold">I - INTRODUCTION</span>
+                            <button id="slot-intro" onclick="targetSlotClicked('intro')" class="mc-slot flex-1 min-h-[36px] text-[8px] text-slate-800 flex items-center px-2 text-left">
+                                [ DROP TEXT HERE ]
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                            <span class="font-pixel text-[7px] bg-indigo-900 text-amber-200 px-2 py-1 rounded flex-shrink-0 font-bold">C - CONTENT</span>
+                            <button id="slot-content" onclick="targetSlotClicked('content')" class="mc-slot flex-1 min-h-[48px] text-[8px] text-slate-800 flex items-center px-2 text-left">
+                                [ DROP TEXT HERE ]
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                            <span class="font-pixel text-[7px] bg-indigo-900 text-amber-200 px-2 py-1 rounded flex-shrink-0 font-bold">C - CLOSING</span>
+                            <button id="slot-closing" onclick="targetSlotClicked('closing')" class="mc-slot flex-1 min-h-[28px] text-[8px] text-slate-800 flex items-center px-2 text-left">
+                                [ DROP TEXT HERE ]
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                            <span class="font-pixel text-[7px] bg-indigo-900 text-amber-200 px-2 py-1 rounded flex-shrink-0 font-bold">N - NAME</span>
+                            <button id="slot-signoff" onclick="targetSlotClicked('signoff')" class="mc-slot flex-1 min-h-[28px] text-[8px] text-slate-800 flex items-center px-2 text-left">
+                                [ DROP TEXT HERE ]
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Bank & Instructions -->
+                    <div class="col-span-5 flex flex-col justify-between space-y-2">
+                        <div class="mc-panel-wood p-3 flex-1 flex flex-col justify-between overflow-y-auto">
+                            <div class="text-[8px] text-amber-200 uppercase mb-2">🔀 JUMBLED TEXT BANK</div>
+                            <div id="labelBankStage1" class="space-y-2"></div>
+
+                            <button onclick="checkStage1Answers()" class="mc-button mc-button-green w-full py-2.5 text-[9px] mt-2">
+                                CHECK ANSWER ✨
+                            </button>
+                        </div>
+
+                        <div class="mc-box p-2.5 text-[8px] text-amber-200 leading-normal font-sans">
+                            <span class="text-mc-gold font-bold font-pixel block mb-1">💡 HOW TO PLAY:</span>
+                            Click a snippet on the right, then click its matching Email Part on the left!
+                        </div>
+                    </div>
+                </div>
+
+                <div id="feedbackStage1" class="hidden text-center text-[9px] p-2 border-2"></div>
+            </section>
+
+            <!-- SCREEN 4: STAGE 2 - UNJUMBLE SENTENCES -->
+            <section id="screenStage2" class="hidden w-full h-full flex flex-col justify-between p-3 bg-slate-900">
+                <div class="flex justify-between items-center bg-mc-wood p-2 border-b-2 border-mc-woodDark">
+                    <div class="flex gap-2">
+                        <button onclick="goToHomepage()" class="mc-button text-[8px] px-2 py-1 bg-sky-700 border-sky-400">🏠 HOME</button>
+                        <button onclick="showScreen('screenMap')" class="mc-button text-[8px] px-2 py-1">⬅ MAP</button>
+                    </div>
+                    <span class="text-[10px] text-mc-gold text-pixel-shadow">STAGE II - UNJUMBLE SENTENCES</span>
+                    <button onclick="resetStage2()" class="mc-button text-[8px] px-2 py-1">RESET</button>
+                </div>
+
+                <div class="mc-box p-2 text-[8px] text-amber-200 font-sans flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">📩</span>
+                        <span>Follow <strong>G-I-C-C-N</strong> structure and click words to assemble sentences!</span>
+                    </div>
+                    <button onclick="giveStage2Hint()" class="mc-button mc-button-gold text-[7px] px-2 py-1 font-pixel">
+                        💡 HINT
+                    </button>
+                </div>
+
+                <div class="mc-panel-paper p-3 my-auto h-[330px] overflow-y-auto space-y-2.5 text-[9px]">
+                    <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                        <span class="font-pixel text-[7px] bg-emerald-800 text-white px-2 py-1 rounded font-bold">G - GREETING</span>
+                        <span class="font-bold text-slate-800" id="stage2GreetingText">Dear Friend,</span>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                        <span class="font-pixel text-[7px] bg-blue-800 text-white px-2 py-1 rounded font-bold">I - INTRO</span>
+                        <span class="text-slate-800 font-medium" id="stage2IntroText">How are you? I am writing to tell you about our event.</span>
+                    </div>
+
+                    <div class="bg-amber-200/60 p-2 border-2 border-amber-400 rounded space-y-2">
+                        <div class="flex items-center justify-between border-b border-amber-300 pb-1">
+                            <span class="font-pixel text-[7px] bg-amber-800 text-amber-100 px-2 py-0.5 rounded font-bold">C - CONTENT SENTENCES</span>
+                            <span class="text-[8px] text-slate-700 font-sans font-bold">Click words below to arrange:</span>
+                        </div>
+                        <div id="jumbleSentencesContainer" class="space-y-2"></div>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                        <span class="font-pixel text-[7px] bg-purple-800 text-white px-2 py-1 rounded font-bold">C - CLOSING</span>
+                        <span class="font-bold text-slate-800" id="stage2ClosingText">That's all from me, bye!</span>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-amber-100/80 p-1.5 border border-amber-300 rounded">
+                        <span class="font-pixel text-[7px] bg-rose-800 text-white px-2 py-1 rounded font-bold">N - NAME</span>
+                        <span class="font-bold text-indigo-900">From, <span class="player-name-placeholder">STEVE</span></span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="checkStage2Answers()" class="mc-button mc-button-green w-full py-2.5 text-[9px]">
+                        CHECK ANSWER 🎯
+                    </button>
+                </div>
+
+                <div id="feedbackStage2" class="hidden text-center text-[9px] p-2 border-2"></div>
+            </section>
+
+            <!-- SCREEN 5: STAGE 3 - GUIDED EMAIL WRITER -->
+            <section id="screenStage3" class="hidden w-full h-full flex flex-col justify-between p-3 bg-slate-900">
+                <div class="flex justify-between items-center bg-mc-wood p-2 border-b-2 border-mc-woodDark">
+                    <div class="flex gap-2">
+                        <button onclick="goToHomepage()" class="mc-button text-[8px] px-2 py-1 bg-sky-700 border-sky-400">🏠 HOME</button>
+                        <button onclick="showScreen('screenMap')" class="mc-button text-[8px] px-2 py-1">⬅ MAP</button>
+                    </div>
+                    <span class="text-[10px] text-mc-gold text-pixel-shadow">STAGE III - WRITE FULL G-I-C-C-N EMAIL</span>
+                    <div class="w-10"></div>
+                </div>
+
+                <div class="grid grid-cols-12 gap-3 my-auto h-[410px]">
+                    <!-- Left: Prompt & Interactive Chips -->
+                    <div class="col-span-5 flex flex-col justify-between space-y-2">
+                        <!-- Email Question Box -->
+                        <div class="mc-box p-2.5 text-[9px] text-amber-200 font-sans space-y-1 overflow-y-auto max-h-[160px]">
+                            <span class="font-bold font-pixel text-[8px] text-mc-gold block">📩 EMAIL QUESTION:</span>
+                            <div id="stage3TaskDesc" class="text-[9px] leading-snug"></div>
+                        </div>
+
+                        <!-- Word Bank Chips -->
+                        <div class="mc-panel-wood p-2 flex-1 overflow-y-auto space-y-1.5 text-[9px]">
+                            <span class="text-mc-gold font-bold font-pixel text-[8px] block mb-1">📖 CLICK CHIPS TO INSERT:</span>
+                            <div id="wordBankChipsContainer"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Realistic Email Composer -->
+                    <div class="col-span-7 mc-panel-paper p-3 flex flex-col justify-between text-[9px]">
+                        <div class="space-y-2 flex-1 flex flex-col">
+                            <div class="border-b-2 border-amber-400 pb-1 text-[9px] text-slate-800 space-y-1 font-bold font-sans">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500 w-12">TO:</span>
+                                    <span id="stage3ToEmail" class="bg-amber-200/80 px-2 py-0.5 rounded text-indigo-900">Jason &lt;jason@school.com&gt;</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500 w-12">SUBJECT:</span>
+                                    <span id="stage3SubjectText" class="text-slate-900">My School Event</span>
+                                </div>
+                            </div>
+
+                            <textarea id="emailBodyText" rows="8" placeholder="Type your email here using the G-I-C-C-N format..." 
+                                class="w-full flex-1 p-2 bg-amber-50/90 border-2 border-amber-300 font-sans text-[11px] text-slate-900 outline-none leading-relaxed resize-none rounded"></textarea>
+                        </div>
+
+                        <!-- Live G-I-C-C-N Checklist -->
+                        <div class="bg-amber-100 p-2 border border-amber-300 text-[8px] font-sans space-y-1 mt-1 text-slate-800">
+                            <div class="flex justify-between items-center font-bold border-b border-amber-300 pb-1">
+                                <span>LIVE G-I-C-C-N CHECK:</span>
+                                <span id="wordCountBadge" class="font-pixel text-[8px] px-2 py-0.5 bg-slate-800 text-amber-300 rounded">0 / MIN 30 WORDS</span>
+                            </div>
+
+                            <div class="grid grid-cols-5 gap-1 text-center font-bold font-pixel text-[7px]" id="liveChecklist">
+                                <div id="checkG" class="bg-slate-300 text-slate-600 p-1 rounded">G - GREETING</div>
+                                <div id="checkI" class="bg-slate-300 text-slate-600 p-1 rounded">I - INTRO</div>
+                                <div id="checkC1" class="bg-slate-300 text-slate-600 p-1 rounded">C - CONTENT</div>
+                                <div id="checkC2" class="bg-slate-300 text-slate-600 p-1 rounded">C - CLOSING</div>
+                                <div id="checkN" class="bg-slate-300 text-slate-600 p-1 rounded">N - NAME</div>
+                            </div>
+                        </div>
+
+                        <button onclick="submitStage3Email()" class="mc-button mc-button-gold w-full py-2.5 text-[9px] mt-1.5">
+                            SEND EMAIL 🚀
+                        </button>
+                    </div>
+                </div>
+
+                <div id="feedbackStage3" class="hidden text-center text-[9px] p-2 border-2"></div>
+            </section>
+
+            <!-- SCREEN 6: VICTORY & DIPLOMA + DATABASE HALL OF FAME -->
+            <section id="screenVictory" class="hidden w-full h-full flex flex-col items-center justify-center p-4 bg-slate-900 text-center relative overflow-hidden">
+                <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none w-full h-full z-0"></canvas>
+
+                <div class="relative z-10 max-w-lg w-full mc-panel-wood p-4 flex flex-col items-center space-y-3 overflow-y-auto max-h-[580px]">
+                    <div class="text-3xl animate-bounce">🏆</div>
+                    <h2 class="text-base text-mc-gold text-pixel-shadow">CONGRATULATIONS!</h2>
+                    <div id="starRatingDisplay" class="text-lg">⭐⭐⭐</div>
+
+                    <div class="mc-panel-paper p-3 w-full text-left space-y-1.5 text-[8px] font-sans">
+                        <div class="text-center border-b border-amber-400 pb-2">
+                            <span class="font-pixel text-[8px] text-indigo-900 font-bold">G-I-C-C-N MASTER DIPLOMA</span>
+                            <h3 class="text-xs font-bold text-slate-900 mt-1">Player: <span id="vicPlayerName" class="text-amber-700">STEVE</span></h3>
+                            <p class="text-[8px] text-slate-600 font-bold mt-0.5">Theme: <span id="vicThemeName" class="text-indigo-800">School Sports Day</span></p>
+                        </div>
+
+                        <div class="space-y-1 text-slate-800 pt-1">
+                            <p>✅ <strong>Stage 1:</strong> Mastered Email Parts Matching</p>
+                            <p>✅ <strong>Stage 2:</strong> Unjumbled G-I-C-C-N Sentences</p>
+                            <p>✅ <strong>Stage 3:</strong> Authored Full Email (<span id="vicWordCount">0</span> Words)</p>
+                        </div>
+                    </div>
+
+                    <!-- DATABASE HALL OF FAME TABLE INCLUDING THEME COLUMN -->
+                    <div class="w-full mc-box p-2.5 text-left space-y-1.5 text-[8px]">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-1">
+                            <span class="text-mc-gold font-pixel text-[7px]">📊 HALL OF FAME RECORDS</span>
+                            <span id="sheetStatusBadge" class="text-[7px] text-emerald-400 font-sans">🟢 Synced</span>
+                        </div>
+                        <div id="hallOfFameContainer" class="space-y-1 max-h-28 overflow-y-auto font-sans text-slate-300">
+                            <p class="text-[7px] italic text-slate-400">Loading saved records...</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 w-full">
+                        <button onclick="goToHomepage()" class="mc-button bg-sky-700 border-sky-400 flex-1 py-2 text-[8px]">
+                            🏠 HOMEPAGE
+                        </button>
+                        <button onclick="restartGame()" class="mc-button mc-button-gold flex-1 py-2 text-[8px]">
+                            PLAY AGAIN 🔄
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <footer class="bg-mc-dialog border-t-4 border-slate-700 p-1.5 text-center text-[7px] text-slate-400 flex justify-between px-4">
+            <span>EMAIL QUEST - G-I-C-C-N MASTER ACADEMY</span>
+            <button onclick="goToHomepage()" class="text-amber-400 hover:underline">🏠 HOMEPAGE</button>
+        </footer>
+    </div>
+
+    <!-- FIREBASE & GOOGLE SHEETS DATABASE MODULE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'email-quest-game';
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1wnAPeIWZBsRA_9Ug-fWIMhrISOmOCNQDERjk_Bdg9tYa8rwEGPr0BK02DO931XI8/exec";
+        
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+
+        async function sendToGoogleSheet(payload) {
+            try {
+                const nameVal = payload.playerName || payload.name || (window.gameState && window.gameState.playerName) || document.getElementById('playerName')?.value || 'STEVE';
+
+                const expandedPayload = {
+                    ...payload,
+                    playerName: nameVal,
+                    name: nameVal,
+                    player_name: nameVal,
+                    username: nameVal,
+                    player: nameVal,
+                    emailTheme: payload.emailTheme || 'School Sports Day',
+                    topic: payload.emailTheme || 'School Sports Day'
+                };
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(expandedPayload)
+                });
+
+                const params = new URLSearchParams({
+                    playerName: nameVal,
+                    name: nameVal,
+                    emailTheme: payload.emailTheme || 'School Sports Day',
+                    topic: payload.emailTheme || 'School Sports Day',
+                    avatar: payload.avatar || '🏃',
+                    wordCount: payload.wordCount || 0,
+                    emailText: payload.emailText || '',
+                    timestamp: new Date().toISOString()
+                });
+                fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, { mode: 'no-cors' }).catch(() => {});
+            } catch (err) {
+                console.warn("Google Apps Script submission warning:", err);
+            }
+        }
+
+        async function initDatabase() {
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                    currentUser = cred.user;
+                } else {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                }
+                loadHallOfFame();
+            } catch (e) {
+                console.warn("Database initialization status:", e);
+            }
+        }
+
+        async function saveCompletionToDb(playerName, avatar, wordCount, emailText, stars, themeTitle) {
+            const nameVal = playerName || (window.gameState && window.gameState.playerName) || document.getElementById('playerName')?.value || 'STEVE';
+            const themeVal = themeTitle || (window.gameState && window.gameState.topicTitle) || 'School Sports Day';
+
+            const payload = {
+                playerName: nameVal,
+                name: nameVal,
+                player_name: nameVal,
+                username: nameVal,
+                player: nameVal,
+                emailTheme: themeVal,
+                topic: themeVal,
+                avatar: avatar || '🏃',
+                wordCount: wordCount || 0,
+                emailText: emailText || '',
+                stars: stars || 3,
+                timestamp: Date.now(),
+                userId: currentUser ? currentUser.uid : 'guest'
+            };
+
+            saveToLocalStorage(payload);
+            sendToGoogleSheet(payload);
+
+            if (!db || !currentUser) {
+                renderHallOfFameUI(getLocalStorageRecords());
+                return;
+            }
+
+            try {
+                const publicCol = collection(db, 'artifacts', appId, 'public', 'data', 'completions');
+                await addDoc(publicCol, payload);
+                loadHallOfFame();
+            } catch (e) {
+                console.error("Error saving to Firestore:", e);
+                renderHallOfFameUI(getLocalStorageRecords());
+            }
+        }
+
+        function saveToLocalStorage(record) {
+            try {
+                const existing = JSON.parse(localStorage.getItem('email_quest_records') || '[]');
+                existing.unshift(record);
+                localStorage.setItem('email_quest_records', JSON.stringify(existing.slice(0, 20)));
+            } catch(e) {}
+        }
+
+        function getLocalStorageRecords() {
+            try {
+                return JSON.parse(localStorage.getItem('email_quest_records') || '[]');
+            } catch(e) { return []; }
+        }
+
+        async function loadHallOfFame() {
+            if (!db || !currentUser) {
+                renderHallOfFameUI(getLocalStorageRecords());
+                return;
+            }
+            try {
+                const publicCol = collection(db, 'artifacts', appId, 'public', 'data', 'completions');
+                const snapshot = await getDocs(publicCol);
+                const records = [];
+                snapshot.forEach(doc => records.push(doc.data()));
+                
+                records.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                
+                if (records.length === 0) {
+                    renderHallOfFameUI(getLocalStorageRecords());
+                } else {
+                    renderHallOfFameUI(records);
+                }
+            } catch (e) {
+                renderHallOfFameUI(getLocalStorageRecords());
+            }
+        }
+
+        function renderHallOfFameUI(records) {
+            const container = document.getElementById('hallOfFameContainer');
+            if (!container) return;
+
+            if (records.length === 0) {
+                container.innerHTML = `<p class="text-[7px] italic text-slate-400">No saved completions yet. Be the first!</p>`;
+                return;
+            }
+
+            container.innerHTML = records.slice(0, 5).map(r => `
+                <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded border border-slate-700 text-[7px]">
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-amber-300">${r.avatar || '🏃'} ${r.playerName || 'HERO'}</span>
+                        <span class="bg-indigo-900 text-amber-200 px-1.5 py-0.5 rounded font-mono text-[6px]">${r.emailTheme || r.topic || 'Sports Day'}</span>
+                    </div>
+                    <span class="text-[7px] text-slate-400">${'⭐'.repeat(r.stars || 3)} • ${r.wordCount || 0} words • ${new Date(r.timestamp || Date.now()).toLocaleDateString()}</span>
+                </div>
+            `).join('');
+        }
+
+        window.saveCompletionToDb = saveCompletionToDb;
+        window.loadHallOfFame = loadHallOfFame;
+
+        initDatabase();
+    </script>
+
+    <!-- GAME ENGINE & LOGIC -->
+    <script>
+        // --- SOUND SYNTHESIZER ---
+        let soundEnabled = true;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.04);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.04);
+                    osc.start(now);
+                    osc.stop(now + 0.04);
+                } else if (type === 'jump') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'hitBlock') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(987.77, now);
+                    osc.frequency.setValueAtTime(1318.51, now + 0.08);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(554.37, now + 0.08);
+                    osc.frequency.setValueAtTime(659.25, now + 0.16);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.setValueAtTime(130, now + 0.12);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'win') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'square';
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.1);
+                        g.gain.setValueAtTime(0.15, now + idx * 0.1);
+                        g.gain.linearRampToValueAtTime(0.01, now + idx * 0.1 + 0.2);
+                        o.start(now + idx * 0.1);
+                        o.stop(now + idx * 0.1 + 0.2);
+                    });
+                }
+            } catch (e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundToggleBtn').textContent = soundEnabled ? '🔊 SOUND' : '🔇 MUTE';
+        }
+
+        // --- TOPIC CONFIGURATIONS WITH ACCURATE PROMPTS ---
+        const TOPIC_DATA = {
+            sports: {
+                title: "School Sports Day",
+                subject: "My School Sports Day",
+                recipient: "Jason <jason@school.com>",
+                greetingText: "Dear Jason,",
+                introText: "How are you? I am writing to tell you about my sports day at school.",
+                closingText: "That's all from me, bye!",
+                questionHTML: `
+                    <p class="font-bold mb-1">Your friend, Jason, wants to know about your school sports day.</p>
+                    <p class="mb-1">In your email, tell him:</p>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-300">
+                        <li>where the sports day was</li>
+                        <li>what games you played</li>
+                        <li>how do you feel</li>
+                    </ul>
+                `,
+                s2Sentences: [
+                    { id: 1, words: ["The", "sports day", "was", "at", "my", "school field."], correctOrder: ["The", "sports day", "was", "at", "my", "school field."], userOrder: [] },
+                    { id: 2, words: ["I", "played", "badminton", "and", "joined", "running."], correctOrder: ["I", "played", "badminton", "and", "joined", "running."], userOrder: [] },
+                    { id: 3, words: ["I", "felt", "very", "happy", "and", "excited."], correctOrder: ["I", "felt", "very", "happy", "and", "excited."], userOrder: [] }
+                ],
+                s1Snippets: [
+                    { id: "greeting", text: "Dear Jason," },
+                    { id: "intro", text: "How are you? I am writing to tell you about my sports day." },
+                    { id: "content", text: "It was at the school field last Friday. I played badminton and joined running. I felt very happy!" },
+                    { id: "closing", text: "That's all from me, bye!" },
+                    { id: "signoff", text: "From, STEVE" }
+                ],
+                chips: ["Dear Jason,", "How are you?", "I am writing to tell you about my sports day.", "It was at our school field last Friday.", "I played badminton and joined running.", "I felt very happy and excited.", "That's all from me, bye!", "From, "]
+            },
+            picnic: {
+                title: "Class Picnic Outing",
+                subject: "Our Fun Class Picnic",
+                recipient: "Daniel <daniel@school.com>",
+                greetingText: "Dear Daniel,",
+                introText: "How are you? I am writing to tell you about our class picnic.",
+                closingText: "Hope to hear from you soon!",
+                questionHTML: `
+                    <p class="font-bold mb-1">Your friend, Daniel, wants to know about your class picnic. Write an email to tell him about it.</p>
+                    <p class="mb-1">In your email, tell him:</p>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-300">
+                        <li>where the class picnic was</li>
+                        <li>what food you ate</li>
+                        <li>how do you feel</li>
+                    </ul>
+                `,
+                s2Sentences: [
+                    { id: 1, words: ["The", "class picnic", "was", "at", "the", "sunny beach park."], correctOrder: ["The", "class picnic", "was", "at", "the", "sunny beach park."], userOrder: [] },
+                    { id: 2, words: ["I", "ate", "delicious", "sandwiches", "and", "fruit."], correctOrder: ["I", "ate", "delicious", "sandwiches", "and", "fruit."], userOrder: [] },
+                    { id: 3, words: ["I", "felt", "very", "relaxed", "and", "happy."], correctOrder: ["I", "felt", "very", "relaxed", "and", "happy."], userOrder: [] }
+                ],
+                s1Snippets: [
+                    { id: "greeting", text: "Dear Daniel," },
+                    { id: "intro", text: "How are you? I am writing to tell you about our class picnic." },
+                    { id: "content", text: "The picnic was at the sunny beach park. I ate delicious sandwiches and drank juice. I felt very relaxed and happy!" },
+                    { id: "closing", text: "Hope to hear from you soon!" },
+                    { id: "signoff", text: "From, STEVE" }
+                ],
+                chips: ["Dear Daniel,", "How are you?", "I am writing to tell you about our class picnic.", "The picnic was at the sunny beach park.", "I ate delicious sandwiches and drank juice.", "I felt very relaxed and happy.", "Hope to hear from you soon!", "From, "]
+            },
+            science: {
+                title: "Science Fair Exhibition",
+                subject: "School Science Fair",
+                recipient: "Aina <aina@school.com>",
+                greetingText: "Dear Aina,",
+                introText: "How are you? I am writing to tell you about our school Science Fair.",
+                closingText: "See you at school soon!",
+                questionHTML: `
+                    <p class="font-bold mb-1">Your friend, Aina, could not attend your school’s Science Fair. Write an email to tell her about it.</p>
+                    <p class="mb-1">In your email, tell her:</p>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-300">
+                        <li>when the Science Fair was</li>
+                        <li>what experiment you did</li>
+                        <li>how do you feel</li>
+                    </ul>
+                `,
+                s2Sentences: [
+                    { id: 1, words: ["The", "Science Fair", "was", "held", "last Tuesday."], correctOrder: ["The", "Science Fair", "was", "held", "last Tuesday."], userOrder: [] },
+                    { id: 2, words: ["I", "did", "a", "bubbling", "volcano", "experiment."], correctOrder: ["I", "did", "a", "bubbling", "volcano", "experiment."], userOrder: [] },
+                    { id: 3, words: ["I", "felt", "very", "proud", "and", "excited."], correctOrder: ["I", "felt", "very", "proud", "and", "excited."], userOrder: [] }
+                ],
+                s1Snippets: [
+                    { id: "greeting", text: "Dear Aina," },
+                    { id: "intro", text: "How are you? I am writing to tell you about our Science Fair." },
+                    { id: "content", text: "The Science Fair was held last Tuesday in the hall. I did a bubbling volcano experiment. I felt very proud and excited!" },
+                    { id: "closing", text: "See you at school soon!" },
+                    { id: "signoff", text: "From, STEVE" }
+                ],
+                chips: ["Dear Aina,", "How are you?", "I am writing to tell you about our Science Fair.", "The Science Fair was held last Tuesday.", "I did a bubbling volcano experiment.", "I felt very proud and excited.", "See you at school soon!", "From, "]
+            }
+        };
+
+        // --- GLOBAL GAME STATE ---
+        const gameState = {
+            playerName: "STEVE",
+            playerAvatar: "🏃",
+            selectedTopic: "sports",
+            topicTitle: "School Sports Day",
+            stageUnlocked: 1,
+            stageCompleted: { 1: false, 2: false, 3: false },
+            lives: 5,
+
+            // Stage 1
+            stage1SelectedTextId: null,
+            stage1Slots: { greeting: null, intro: null, content: null, closing: null, signoff: null },
+            stage1JumbledSnippets: [],
+
+            // Stage 2
+            stage2Sentences: []
+        };
+        window.gameState = gameState;
+
+        function goToHomepage() {
+            playSound('click');
+            showScreen('screenWelcome');
+        }
+
+        function updateThemePreviewNote() {
+            const select = document.getElementById('topicSelect');
+            const note = document.getElementById('themePreviewNote');
+            const val = select.value;
+            if (val === 'sports') {
+                note.textContent = "Theme: Mario Platformer Map style! Skyblue & Mario Blocks.";
+            } else if (val === 'picnic') {
+                note.textContent = "Theme: Pacman Map style! Bright Skyblue & Sunny Day maze.";
+            } else if (val === 'science') {
+                note.textContent = "Theme: Snake Game Map style! Science flasks & lab equipment graphics.";
+            }
+        }
+
+        function updateLivesUI() {
+            const heartsStr = "❤️".repeat(Math.max(0, gameState.lives)) + "🖤".repeat(Math.max(0, 5 - gameState.lives));
+            const el = document.getElementById('heartsDisplay');
+            if (el) el.textContent = heartsStr;
+        }
+
+        function deductLife() {
+            gameState.lives--;
+            updateLivesUI();
+            if (gameState.lives <= 0) {
+                setTimeout(() => {
+                    alert("💔 GAME OVER! You ran out of lives (0 Hearts left).\n\nAll progress will reset. Try again!");
+                    restartGameFromBeginning();
+                }, 300);
+            }
+        }
+
+        function restartGameFromBeginning() {
+            gameState.lives = 5;
+            gameState.stageUnlocked = 1;
+            gameState.stageCompleted = { 1: false, 2: false, 3: false };
+            updateLivesUI();
+            resetStage1();
+            showScreen('screenWelcome');
+        }
+
+        function selectAvatar(emoji) {
+            playSound('click');
+            gameState.playerAvatar = emoji;
+            document.querySelectorAll('.avatar-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-300');
+                if (btn.textContent.includes(emoji)) {
+                    btn.classList.add('bg-amber-300');
+                }
+            });
+        }
+
+        function handleStartGame(e) {
+            e.preventDefault();
+            playSound('click');
+            const name = document.getElementById('playerName').value.trim();
+            if (name) gameState.playerName = name.toUpperCase();
+
+            gameState.selectedTopic = document.getElementById('topicSelect').value || 'sports';
+            gameState.topicTitle = TOPIC_DATA[gameState.selectedTopic].title;
+
+            document.getElementById('playerNameDisplay').textContent = gameState.playerName;
+            document.getElementById('playerAvatarDisplay').textContent = gameState.playerAvatar;
+            document.getElementById('playerPill').classList.remove('hidden');
+
+            document.querySelectorAll('.player-name-placeholder').forEach(el => el.textContent = gameState.playerName);
+
+            gameState.lives = 5;
+            updateLivesUI();
+            showScreen('screenMap');
+        }
+
+        function showScreen(screenId) {
+            playSound('click');
+            ['screenWelcome', 'screenMap', 'screenStage1', 'screenStage2', 'screenStage3', 'screenVictory'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+
+            if (screenId === 'screenMap') initThemeMapCanvas();
+            if (screenId === 'screenStage1') initStage1();
+            if (screenId === 'screenStage2') initStage2();
+            if (screenId === 'screenStage3') initStage3();
+            if (screenId === 'screenVictory') initVictory();
+        }
+
+        function selectStage(num) {
+            if (num > gameState.stageUnlocked) {
+                playSound('error');
+                return;
+            }
+            showScreen(`screenStage${num}`);
+        }
+
+        // =========================================================
+        // CONTROLLER & CANVAS ENGINES FOR 3 DIFFERENT THEMES
+        // =========================================================
+        let activeLoopId = null;
+        const padKeys = { left: false, right: false, up: false, down: false, jump: false };
+
+        function handlePad(dir, active) {
+            if (dir === 'LEFT') padKeys.left = active;
+            if (dir === 'RIGHT') padKeys.right = active;
+            if (dir === 'UP') padKeys.up = active;
+            if (dir === 'DOWN') padKeys.down = active;
+            if (dir === 'JUMP') padKeys.jump = active;
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (document.getElementById('screenMap').classList.contains('hidden')) return;
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') padKeys.left = true;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') padKeys.right = true;
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { padKeys.up = true; padKeys.jump = true; }
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') padKeys.down = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') padKeys.left = false;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') padKeys.right = false;
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { padKeys.up = false; padKeys.jump = false; }
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') padKeys.down = false;
+        });
+
+        function initThemeMapCanvas() {
+            if (activeLoopId) cancelAnimationFrame(activeLoopId);
+            const topic = gameState.selectedTopic;
+
+            const jumpBtn = document.getElementById('jumpBtn');
+            const headerTitle = document.getElementById('mapHeaderTitle');
+            const controlsHint = document.getElementById('mapControlsHint');
+            const mapSubtext = document.getElementById('mapSubtext');
+
+            if (topic === 'sports') {
+                jumpBtn.classList.remove('hidden');
+                headerTitle.textContent = "WORLD MAP - SCHOOL SPORTS DAY (MARIO STYLE)";
+                controlsHint.textContent = "Use ⬅️ ➡️ to run, JUMP into [?] blocks";
+                mapSubtext.textContent = "Jump into Stage 1, 2, or 3 blocks to enter!";
+                runMarioCanvas();
+            } else if (topic === 'picnic') {
+                jumpBtn.classList.add('hidden');
+                headerTitle.textContent = "WORLD MAP - CLASS PICNIC OUTING (PACMAN STYLE)";
+                controlsHint.textContent = "Use Arrow / Onscreen Keys to move Pacman";
+                mapSubtext.textContent = "Guide Pacman to eat Stage 1, 2, or 3 target dots!";
+                runPacmanCanvas();
+            } else if (topic === 'science') {
+                jumpBtn.classList.add('hidden');
+                headerTitle.textContent = "WORLD MAP - SCIENCE FAIR (SNAKE GAME STYLE)";
+                controlsHint.textContent = "Steer the Lab Snake with Arrow Keys";
+                mapSubtext.textContent = "Guide Snake to collect Stage 1, 2, or 3 science flasks!";
+                runSnakeCanvas();
+            }
+        }
+
+        // --- 1. MARIO CANVAS ENGINE (SPORTS DAY) ---
+        function runMarioCanvas() {
+            const canvas = document.getElementById('themeCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const player = { x: 100, y: 300, w: 32, h: 38, vx: 0, vy: 0, speed: 4.5, jumpPower: -11, grounded: false };
+            const gravity = 0.55;
+            const floorY = 360;
+
+            const blocks = [
+                { id: 1, x: 180, y: 220, w: 100, h: 50, title: "STAGE 1", offsetY: 0 },
+                { id: 2, x: 400, y: 220, w: 100, h: 50, title: "STAGE 2", offsetY: 0 },
+                { id: 3, x: 620, y: 220, w: 100, h: 50, title: "STAGE 3", offsetY: 0 }
+            ];
+
+            canvas.onclick = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+                const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+                blocks.forEach(b => {
+                    if (clickX >= b.x && clickX <= b.x + b.w && clickY >= b.y && clickY <= b.y + b.h) {
+                        if (b.id <= gameState.stageUnlocked) { playSound('hitBlock'); selectStage(b.id); }
+                        else { playSound('error'); }
+                    }
+                });
+            };
+
+            let hitCooldown = 0;
+
+            function update() {
+                if (padKeys.left) player.vx = -player.speed;
+                else if (padKeys.right) player.vx = player.speed;
+                else player.vx = 0;
+
+                if ((padKeys.jump || padKeys.up) && player.grounded) {
+                    player.vy = player.jumpPower;
+                    player.grounded = false;
+                    playSound('jump');
+                }
+
+                player.vy += gravity;
+                player.x += player.vx;
+                player.y += player.vy;
+
+                if (player.x < 10) player.x = 10;
+                if (player.x + player.w > canvas.width - 10) player.x = canvas.width - 10 - player.w;
+
+                if (player.y + player.h >= floorY) {
+                    player.y = floorY - player.h;
+                    player.vy = 0;
+                    player.grounded = true;
+                }
+
+                if (hitCooldown > 0) hitCooldown--;
+
+                blocks.forEach(b => {
+                    if (b.offsetY < 0) b.offsetY += 1;
+
+                    if (player.x + player.w > b.x && player.x < b.x + b.w) {
+                        if (player.y <= b.y + b.h && player.y + player.h >= b.y && player.vy < 0) {
+                            b.offsetY = -10;
+                            player.vy = 2;
+                            if (hitCooldown === 0) {
+                                hitCooldown = 25;
+                                if (b.id <= gameState.stageUnlocked) {
+                                    playSound('hitBlock');
+                                    setTimeout(() => selectStage(b.id), 200);
+                                } else { playSound('error'); }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Skyblue background
+                ctx.fillStyle = "#5c94fc";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Clouds
+                ctx.fillStyle = "#ffffff";
+                [ {x:100, y:60}, {x:380, y:40}, {x:720, y:70} ].forEach(c => {
+                    ctx.fillRect(c.x, c.y, 60, 24);
+                    ctx.fillRect(c.x + 10, c.y - 10, 40, 10);
+                });
+
+                // Pipes
+                ctx.fillStyle = "#00a800";
+                ctx.fillRect(300, floorY - 60, 48, 60);
+                ctx.fillRect(540, floorY - 60, 48, 60);
+
+                // Floor
+                ctx.fillStyle = "#e75910";
+                ctx.fillRect(0, floorY, canvas.width, canvas.height - floorY);
+                ctx.fillStyle = "#00a800";
+                ctx.fillRect(0, floorY, canvas.width, 16);
+
+                blocks.forEach(b => {
+                    const isUnlocked = b.id <= gameState.stageUnlocked;
+                    const isDone = gameState.stageCompleted[b.id];
+                    const drawY = b.y + b.offsetY;
+
+                    ctx.fillStyle = isDone ? "#f3a81a" : (isUnlocked ? "#fbc043" : "#737373");
+                    ctx.fillRect(b.x, drawY, b.w, b.h);
+
+                    ctx.fillStyle = isUnlocked ? "#241400" : "#ffffff";
+                    ctx.font = "8px 'Press Start 2P'";
+                    ctx.textAlign = "center";
+                    ctx.fillText(b.title, b.x + b.w / 2, drawY + 22);
+
+                    ctx.font = "7px 'Press Start 2P'";
+                    if (isDone) {
+                        ctx.fillStyle = "#15803d";
+                        ctx.fillText("[ DONE ✓ ]", b.x + b.w / 2, drawY + 38);
+                    } else if (isUnlocked) {
+                        ctx.fillStyle = "#0284c7";
+                        ctx.fillText("[ JUMP ? ]", b.x + b.w / 2, drawY + 38);
+                    } else {
+                        ctx.fillStyle = "#dc2626";
+                        ctx.fillText("[ LOCKED ]", b.x + b.w / 2, drawY + 38);
+                    }
+                });
+
+                // Player avatar
+                ctx.fillStyle = "#e11d48";
+                ctx.fillRect(player.x, player.y, player.w, player.h);
+                ctx.font = "16px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(gameState.playerAvatar, player.x + player.w / 2, player.y + 16);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "7px 'Press Start 2P'";
+                ctx.fillText(gameState.playerName, player.x + player.w / 2, player.y - 6);
+            }
+
+            function loop() {
+                update(); render();
+                if (!document.getElementById('screenMap').classList.contains('hidden')) activeLoopId = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        // --- 2. PACMAN CANVAS ENGINE (CLASS PICNIC OUTING - SKYBLUE SUNNY DAY) ---
+        function runPacmanCanvas() {
+            const canvas = document.getElementById('themeCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const pacman = { x: 80, y: 190, r: 18, dirX: 0, dirY: 0, speed: 3.5, mouthAngle: 0.2, mouthDir: 0.02 };
+
+            const targets = [
+                { id: 1, x: 200, y: 190, r: 35, title: "STAGE 1", icon: "🧺" },
+                { id: 2, x: 400, y: 190, r: 35, title: "STAGE 2", icon: "🥪" },
+                { id: 3, x: 600, y: 190, r: 35, title: "STAGE 3", icon: "🍹" }
+            ];
+
+            let triggerCooldown = 0;
+
+            function update() {
+                if (padKeys.left) { pacman.dirX = -1; pacman.dirY = 0; }
+                else if (padKeys.right) { pacman.dirX = 1; pacman.dirY = 0; }
+                else if (padKeys.up) { pacman.dirX = 0; pacman.dirY = -1; }
+                else if (padKeys.down) { pacman.dirX = 0; pacman.dirY = 1; }
+
+                pacman.x += pacman.dirX * pacman.speed;
+                pacman.y += pacman.dirY * pacman.speed;
+
+                if (pacman.x < 30) pacman.x = 30;
+                if (pacman.x > canvas.width - 30) pacman.x = canvas.width - 30;
+                if (pacman.y < 30) pacman.y = 30;
+                if (pacman.y > canvas.height - 30) pacman.y = canvas.height - 30;
+
+                pacman.mouthAngle += pacman.mouthDir;
+                if (pacman.mouthAngle > 0.4 || pacman.mouthAngle < 0.05) pacman.mouthDir *= -1;
+
+                if (triggerCooldown > 0) triggerCooldown--;
+
+                targets.forEach(t => {
+                    const dist = Math.hypot(pacman.x - t.x, pacman.y - t.y);
+                    if (dist < pacman.r + t.r && triggerCooldown === 0) {
+                        triggerCooldown = 30;
+                        if (t.id <= gameState.stageUnlocked) {
+                            playSound('hitBlock');
+                            setTimeout(() => selectStage(t.id), 200);
+                        } else {
+                            playSound('error');
+                        }
+                    }
+                });
+            }
+
+            canvas.onclick = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+                const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+                targets.forEach(t => {
+                    const dist = Math.hypot(clickX - t.x, clickY - t.y);
+                    if (dist <= t.r) {
+                        if (t.id <= gameState.stageUnlocked) { playSound('hitBlock'); selectStage(t.id); }
+                        else { playSound('error'); }
+                    }
+                });
+            };
+
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Bright Skyblue Sunny Background
+                ctx.fillStyle = "#7dd3fc";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Sunny Grass Base & Flowers
+                ctx.fillStyle = "#4ade80";
+                ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+
+                // Sun Graphics
+                ctx.fillStyle = "#facc15";
+                ctx.beginPath();
+                ctx.arc(740, 60, 35, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Decorative Picnic Maze Lines
+                ctx.strokeStyle = "#38bdf8";
+                ctx.lineWidth = 8;
+                ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 90);
+
+                // Dots pathway
+                ctx.fillStyle = "#fef08a";
+                for (let x = 70; x < canvas.width - 70; x += 30) {
+                    ctx.beginPath();
+                    ctx.arc(x, 190, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Render Targets
+                targets.forEach(t => {
+                    const isUnlocked = t.id <= gameState.stageUnlocked;
+                    const isDone = gameState.stageCompleted[t.id];
+
+                    ctx.fillStyle = isDone ? "#22c55e" : (isUnlocked ? "#f59e0b" : "#64748b");
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    ctx.font = "20px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(t.icon, t.x, t.y - 2);
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "7px 'Press Start 2P'";
+                    ctx.fillText(t.title, t.x, t.y + 18);
+
+                    if (isDone) {
+                        ctx.fillStyle = "#15803d";
+                        ctx.fillText("✓ DONE", t.x, t.y + 28);
+                    } else if (!isUnlocked) {
+                        ctx.fillStyle = "#f87171";
+                        ctx.fillText("LOCKED", t.x, t.y + 28);
+                    }
+                });
+
+                // Pacman Character
+                ctx.fillStyle = "#facc15";
+                ctx.beginPath();
+                let angleOffset = 0;
+                if (pacman.dirX === -1) angleOffset = Math.PI;
+                else if (pacman.dirY === -1) angleOffset = -Math.PI / 2;
+                else if (pacman.dirY === 1) angleOffset = Math.PI / 2;
+
+                ctx.arc(pacman.x, pacman.y, pacman.r, angleOffset + pacman.mouthAngle, angleOffset + Math.PI * 2 - pacman.mouthAngle);
+                ctx.lineTo(pacman.x, pacman.y);
+                ctx.fill();
+
+                // Player name badge
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "7px 'Press Start 2P'";
+                ctx.textAlign = "center";
+                ctx.fillText(gameState.playerName, pacman.x, pacman.y - 24);
+            }
+
+            function loop() {
+                update(); render();
+                if (!document.getElementById('screenMap').classList.contains('hidden')) activeLoopId = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        // --- 3. SNAKE CANVAS ENGINE (SCIENCE FAIR - LAB EQUIPMENT & FLASKS) ---
+        function runSnakeCanvas() {
+            const canvas = document.getElementById('themeCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const grid = 20;
+            const snake = [
+                { x: 100, y: 180 },
+                { x: 80, y: 180 },
+                { x: 60, y: 180 }
+            ];
+            let dirX = grid;
+            let dirY = 0;
+
+            const targets = [
+                { id: 1, x: 200, y: 180, title: "STAGE 1", icon: "🧪" },
+                { id: 2, x: 400, y: 180, title: "STAGE 2", icon: "🧫" },
+                { id: 3, x: 600, y: 180, title: "STAGE 3", icon: "🔬" }
+            ];
+
+            let lastTime = 0;
+            let triggerCooldown = 0;
+
+            canvas.onclick = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+                const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+                targets.forEach(t => {
+                    const dist = Math.hypot(clickX - t.x, clickY - t.y);
+                    if (dist <= 30) {
+                        if (t.id <= gameState.stageUnlocked) { playSound('hitBlock'); selectStage(t.id); }
+                        else { playSound('error'); }
+                    }
+                });
+            };
+
+            function update() {
+                if (padKeys.left && dirX === 0) { dirX = -grid; dirY = 0; }
+                else if (padKeys.right && dirX === 0) { dirX = grid; dirY = 0; }
+                else if (padKeys.up && dirY === 0) { dirX = 0; dirY = -grid; }
+                else if (padKeys.down && dirY === 0) { dirX = 0; dirY = grid; }
+
+                const head = { x: snake[0].x + dirX, y: snake[0].y + dirY };
+
+                if (head.x < 20) head.x = canvas.width - 40;
+                if (head.x > canvas.width - 40) head.x = 20;
+                if (head.y < 20) head.y = canvas.height - 40;
+                if (head.y > canvas.height - 40) head.y = 20;
+
+                snake.unshift(head);
+                snake.pop();
+
+                if (triggerCooldown > 0) triggerCooldown--;
+
+                targets.forEach(t => {
+                    const dist = Math.hypot(head.x - t.x, head.y - t.y);
+                    if (dist < 30 && triggerCooldown === 0) {
+                        triggerCooldown = 30;
+                        if (t.id <= gameState.stageUnlocked) {
+                            playSound('hitBlock');
+                            setTimeout(() => selectStage(t.id), 200);
+                        } else {
+                            playSound('error');
+                        }
+                    }
+                });
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Dark Science Laboratory Theme
+                ctx.fillStyle = "#0f172a";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Science Grid Lines
+                ctx.strokeStyle = "#1e293b";
+                ctx.lineWidth = 1;
+                for (let x = 0; x < canvas.width; x += grid) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                }
+                for (let y = 0; y < canvas.height; y += grid) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+
+                // Render Flask Targets
+                targets.forEach(t => {
+                    const isUnlocked = t.id <= gameState.stageUnlocked;
+                    const isDone = gameState.stageCompleted[t.id];
+
+                    ctx.fillStyle = isDone ? "#059669" : (isUnlocked ? "#0284c7" : "#475569");
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, 26, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.font = "18px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(t.icon, t.x, t.y + 4);
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "7px 'Press Start 2P'";
+                    ctx.fillText(t.title, t.x, t.y + 38);
+
+                    if (isDone) {
+                        ctx.fillStyle = "#34d399";
+                        ctx.fillText("✓ DONE", t.x, t.y + 48);
+                    } else if (!isUnlocked) {
+                        ctx.fillStyle = "#f87171";
+                        ctx.fillText("LOCKED", t.x, t.y + 48);
+                    }
+                });
+
+                // Render Snake Body
+                snake.forEach((seg, i) => {
+                    ctx.fillStyle = i === 0 ? "#a855f7" : "#c084fc";
+                    ctx.fillRect(seg.x - grid/2, seg.y - grid/2, grid - 2, grid - 2);
+                });
+
+                ctx.fillStyle = "#a855f7";
+                ctx.font = "7px 'Press Start 2P'";
+                ctx.textAlign = "center";
+                ctx.fillText(gameState.playerName, snake[0].x, snake[0].y - 15);
+            }
+
+            function loop(time) {
+                if (time - lastTime > 110) {
+                    update();
+                    lastTime = time;
+                }
+                render();
+                if (!document.getElementById('screenMap').classList.contains('hidden')) activeLoopId = requestAnimationFrame(loop);
+            }
+            requestAnimationFrame(loop);
+        }
+
+        // ==========================================
+        // STAGE 1: EMAIL ANATOMY (TEXT MATCHING)
+        // ==========================================
+        function getStage1TextSnippets() {
+            const topic = TOPIC_DATA[gameState.selectedTopic] || TOPIC_DATA.sports;
+            return topic.s1Snippets.map(s => {
+                if (s.id === 'signoff') return { ...s, text: `From, ${gameState.playerName}` };
+                return s;
+            });
+        }
+
+        function initStage1() {
+            gameState.stage1JumbledSnippets = getStage1TextSnippets().sort(() => Math.random() - 0.5);
+            renderLabelBankStage1();
+            updateSlotsStage1UI();
+            document.getElementById('feedbackStage1').className = "hidden";
+        }
+
+        function renderLabelBankStage1() {
+            const bank = document.getElementById('labelBankStage1');
+            bank.innerHTML = '';
+
+            gameState.stage1JumbledSnippets.forEach(item => {
+                const isUsed = Object.values(gameState.stage1Slots).includes(item.id);
+                const isSelected = gameState.stage1SelectedTextId === item.id;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `mc-button w-full py-2 px-2 text-[8px] text-left leading-tight flex justify-between items-center ${
+                    isUsed ? 'opacity-30 cursor-not-allowed' : (isSelected ? 'mc-button-gold scale-105' : '')
+                }`;
+                btn.innerHTML = `<span class="font-sans font-bold">💬 "${item.text}"</span> <span class="font-pixel">${isSelected ? '👉' : (isUsed ? '✓' : '')}</span>`;
+                if (!isUsed) btn.onclick = () => selectTextStage1(item.id);
+                bank.appendChild(btn);
+            });
+        }
+
+        function selectTextStage1(id) {
+            playSound('click');
+            gameState.stage1SelectedTextId = (gameState.stage1SelectedTextId === id) ? null : id;
+            renderLabelBankStage1();
+        }
+
+        function targetSlotClicked(slotKey) {
+            if (!gameState.stage1SelectedTextId) {
+                playSound('error');
+                return;
+            }
+            playSound('click');
+            gameState.stage1Slots[slotKey] = gameState.stage1SelectedTextId;
+            gameState.stage1SelectedTextId = null;
+            renderLabelBankStage1();
+            updateSlotsStage1UI();
+        }
+
+        function updateSlotsStage1UI() {
+            const rawSnippets = getStage1TextSnippets();
+            Object.keys(gameState.stage1Slots).forEach(slotKey => {
+                const assignedId = gameState.stage1Slots[slotKey];
+                const btn = document.getElementById(`slot-${slotKey}`);
+                if (assignedId) {
+                    const snippetObj = rawSnippets.find(l => l.id === assignedId);
+                    btn.className = "mc-button mc-button-gold flex-1 min-h-[28px] text-[8px] flex items-center justify-between px-2 py-1 font-sans font-bold";
+                    btn.innerHTML = `<span>"${snippetObj.text}"</span><span class="font-pixel ml-2 text-rose-800">✕</span>`;
+                    btn.onclick = () => clearSlotStage1(slotKey);
+                } else {
+                    btn.className = "mc-slot flex-1 min-h-[28px] text-[8px] font-pixel text-slate-700 flex items-center justify-center hover:bg-amber-100";
+                    btn.innerHTML = "[ DROP TEXT HERE ]";
+                    btn.onclick = () => targetSlotClicked(slotKey);
+                }
+            });
+        }
+
+        function clearSlotStage1(key) {
+            playSound('click');
+            gameState.stage1Slots[key] = null;
+            renderLabelBankStage1();
+            updateSlotsStage1UI();
+        }
+
+        function resetStage1() {
+            playSound('click');
+            gameState.stage1SelectedTextId = null;
+            Object.keys(gameState.stage1Slots).forEach(k => gameState.stage1Slots[k] = null);
+            gameState.stage1JumbledSnippets = getStage1TextSnippets().sort(() => Math.random() - 0.5);
+            renderLabelBankStage1();
+            updateSlotsStage1UI();
+            document.getElementById('feedbackStage1').className = "hidden";
+        }
+
+        function checkStage1Answers() {
+            let correct = 0;
+            Object.keys(gameState.stage1Slots).forEach(k => {
+                if (gameState.stage1Slots[k] === k) correct++;
+            });
+
+            const fb = document.getElementById('feedbackStage1');
+            fb.classList.remove('hidden');
+
+            if (correct === 5) {
+                playSound('success');
+                fb.className = "text-center text-[8px] p-2 bg-emerald-900 border-2 border-emerald-400 text-emerald-200 mt-2";
+                fb.innerHTML = `WELL DONE! ALL TEXT SNIPPETS MATCHED PERFECTLY! <button onclick="completeStage(1)" class="mc-button mc-button-green px-2 py-1 ml-2 text-[7px]">NEXT STAGE ➡️</button>`;
+            } else {
+                playSound('error');
+                deductLife();
+                fb.className = "text-center text-[8px] p-2 bg-rose-900 border-2 border-rose-400 text-rose-200 mt-2";
+                fb.innerHTML = `TRY AGAIN! You got ${correct}/5 correct. 💔 Lost 1 Heart! (${gameState.lives} lives left)`;
+            }
+        }
+
+        // ==========================================
+        // STAGE 2: UNJUMBLE LOGIC
+        // ==========================================
+        function initStage2() {
+            const topic = TOPIC_DATA[gameState.selectedTopic] || TOPIC_DATA.sports;
+            document.getElementById('stage2GreetingText').textContent = topic.greetingText;
+            document.getElementById('stage2IntroText').textContent = topic.introText;
+            document.getElementById('stage2ClosingText').textContent = topic.closingText;
+
+            gameState.stage2Sentences = JSON.parse(JSON.stringify(topic.s2Sentences));
+            gameState.stage2Sentences.forEach(s => {
+                s.wordsShuffled = [...s.words].sort(() => Math.random() - 0.5);
+                s.userOrder = [];
+            });
+            renderStage2UI();
+            document.getElementById('feedbackStage2').className = "hidden";
+        }
+
+        function renderStage2UI() {
+            const container = document.getElementById('jumbleSentencesContainer');
+            container.innerHTML = '';
+
+            gameState.stage2Sentences.forEach((sObj, idx) => {
+                const sBox = document.createElement('div');
+                sBox.className = "p-2 bg-amber-100/60 border border-amber-300 rounded space-y-1.5";
+
+                const outputBox = document.createElement('div');
+                outputBox.className = "min-h-[32px] p-1 bg-white border border-slate-300 rounded flex flex-wrap gap-1 items-center";
+
+                if (sObj.userOrder.length === 0) {
+                    outputBox.innerHTML = `<span class="text-[8px] text-slate-400 font-sans italic">Click words below to build sentence ${idx + 1}...</span>`;
+                } else {
+                    sObj.userOrder.forEach((w, wIdx) => {
+                        const chip = document.createElement('button');
+                        chip.type = 'button';
+                        chip.className = "mc-button mc-button-green text-[7px] px-1.5 py-0.5";
+                        chip.textContent = `${w} ✕`;
+                        chip.onclick = () => removeWordStage2(sObj.id, wIdx);
+                        outputBox.appendChild(chip);
+                    });
+                }
+
+                const chipsBox = document.createElement('div');
+                chipsBox.className = "flex flex-wrap gap-1 pt-1";
+
+                sObj.wordsShuffled.forEach((w, wIdx) => {
+                    const countInUser = sObj.userOrder.filter(x => x === w).length;
+                    const countInShuffledBefore = sObj.wordsShuffled.slice(0, wIdx).filter(x => x === w).length;
+                    const isUsed = countInUser > countInShuffledBefore;
+
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
+                    chip.className = `mc-button text-[7px] px-1.5 py-0.5 ${isUsed ? 'opacity-30 cursor-not-allowed' : ''}`;
+                    chip.textContent = w;
+                    if (!isUsed) chip.onclick = () => addWordStage2(sObj.id, w);
+                    chipsBox.appendChild(chip);
+                });
+
+                sBox.appendChild(outputBox);
+                sBox.appendChild(chipsBox);
+                container.appendChild(sBox);
+            });
+        }
+
+        function addWordStage2(id, word) {
+            playSound('click');
+            const sObj = gameState.stage2Sentences.find(s => s.id === id);
+            sObj.userOrder.push(word);
+            renderStage2UI();
+        }
+
+        function removeWordStage2(id, wIdx) {
+            playSound('click');
+            const sObj = gameState.stage2Sentences.find(s => s.id === id);
+            sObj.userOrder.splice(wIdx, 1);
+            renderStage2UI();
+        }
+
+        function giveStage2Hint() {
+            playSound('click');
+            gameState.stage2Sentences.forEach(s => {
+                s.userOrder = [...s.correctOrder];
+            });
+            renderStage2UI();
+        }
+
+        function resetStage2() {
+            playSound('click');
+            initStage2();
+        }
+
+        function checkStage2Answers() {
+            let correct = true;
+            gameState.stage2Sentences.forEach(s => {
+                if (s.userOrder.join(' ') !== s.correctOrder.join(' ')) correct = false;
+            });
+
+            const fb = document.getElementById('feedbackStage2');
+            fb.classList.remove('hidden');
+
+            if (correct) {
+                playSound('success');
+                fb.className = "text-center text-[8px] p-2 bg-emerald-900 border-2 border-emerald-400 text-emerald-200 mt-2";
+                fb.innerHTML = `WELL DONE! SENTENCES UNJUMBLED! <button onclick="completeStage(2)" class="mc-button mc-button-green px-2 py-1 ml-2 text-[7px]">NEXT STAGE ➡️</button>`;
+            } else {
+                playSound('error');
+                deductLife();
+                fb.className = "text-center text-[8px] p-2 bg-rose-900 border-2 border-rose-400 text-rose-200 mt-2";
+                fb.innerHTML = `TRY AGAIN! Check word order carefully. 💔 Lost 1 Heart! (${gameState.lives} lives left)`;
+            }
+        }
+
+        // ==========================================
+        // STAGE 3: GUIDED WRITER LOGIC
+        // ==========================================
+        function initStage3() {
+            const topic = TOPIC_DATA[gameState.selectedTopic] || TOPIC_DATA.sports;
+            document.getElementById('stage3SubjectText').textContent = topic.subject;
+            document.getElementById('stage3ToEmail').textContent = topic.recipient;
+            document.getElementById('stage3TaskDesc').innerHTML = topic.questionHTML;
+
+            // Render Chips
+            const chipsBox = document.getElementById('wordBankChipsContainer');
+            chipsBox.innerHTML = '';
+            topic.chips.forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'chip-btn';
+                btn.textContent = `+ ${c}`;
+                btn.onclick = () => insertChipToEmail(c);
+                chipsBox.appendChild(btn);
+            });
+
+            const area = document.getElementById('emailBodyText');
+            area.oninput = updateChecklist;
+            updateChecklist();
+            document.getElementById('feedbackStage3').className = "hidden";
+        }
+
+        function insertChipToEmail(text) {
+            playSound('click');
+            const area = document.getElementById('emailBodyText');
+            if (area.value.length > 0 && !area.value.endsWith(' ') && !area.value.endsWith('\n')) {
+                area.value += ' ';
+            }
+            area.value += text + ' ';
+            area.focus();
+            updateChecklist();
+        }
+
+        function countWords(str) {
+            if (!str) return 0;
+            const words = str.trim().split(/\s+/).filter(w => w.length > 0);
+            return words.length;
+        }
+
+        function updateChecklist() {
+            const val = document.getElementById('emailBodyText').value;
+            const lowerVal = val.toLowerCase();
+            const wCount = countWords(val);
+
+            const badge = document.getElementById('wordCountBadge');
+            badge.textContent = `${wCount} WORDS (MIN 30)`;
+            if (wCount >= 30) {
+                badge.className = "font-pixel text-[8px] px-2 py-0.5 bg-emerald-700 text-white rounded font-bold";
+            } else {
+                badge.className = "font-pixel text-[8px] px-2 py-0.5 bg-amber-700 text-white rounded";
+            }
+
+            // Live G-I-C-C-N Parser
+            const hasG = lowerVal.includes('dear') || lowerVal.includes('hi') || lowerVal.includes('hello');
+            const hasI = lowerVal.includes('how are you') || lowerVal.includes('writing to tell');
+            const hasC1 = wCount >= 12;
+            const hasC2 = lowerVal.includes('bye') || lowerVal.includes('see you') || lowerVal.includes('that\'s all') || lowerVal.includes('hear from you');
+            const hasN = lowerVal.includes('from') || lowerVal.includes('regards') || lowerVal.includes(gameState.playerName.toLowerCase());
+
+            toggleIndicator('checkG', hasG, 'G - GREETING');
+            toggleIndicator('checkI', hasI, 'I - INTRO');
+            toggleIndicator('checkC1', hasC1, 'C - CONTENT');
+            toggleIndicator('checkC2', hasC2, 'C - CLOSING');
+            toggleIndicator('checkN', hasN, 'N - NAME');
+        }
+
+        function toggleIndicator(id, active, label) {
+            const el = document.getElementById(id);
+            if (active) {
+                el.className = "bg-emerald-700 text-white p-1 rounded font-bold";
+                el.textContent = `✓ ${label}`;
+            } else {
+                el.className = "bg-slate-300 text-slate-600 p-1 rounded";
+                el.textContent = label;
+            }
+        }
+
+        function submitStage3Email() {
+            const val = document.getElementById('emailBodyText').value.trim();
+            const wCount = countWords(val);
+            const fb = document.getElementById('feedbackStage3');
+            fb.classList.remove('hidden');
+
+            if (wCount < 30) {
+                playSound('error');
+                fb.className = "text-center text-[8px] p-2 bg-rose-900 border-2 border-rose-400 text-rose-200 mt-2";
+                fb.innerHTML = `YOUR EMAIL IS TOO SHORT! You have written ${wCount} words. Please write at least 30 words to submit.`;
+                return;
+            }
+
+            const stars = gameState.lives >= 4 ? 3 : (gameState.lives >= 2 ? 2 : 1);
+
+            if (typeof window.saveCompletionToDb === 'function') {
+                const activeName = gameState.playerName || document.getElementById('playerName')?.value || 'STEVE';
+                window.saveCompletionToDb(activeName, gameState.playerAvatar, wCount, val, stars, gameState.topicTitle);
+            }
+
+            playSound('win');
+            fb.className = "text-center text-[8px] p-2 bg-purple-900 border-2 border-purple-400 text-purple-200 mt-2";
+            fb.innerHTML = `FANTASTIC G-I-C-C-N EMAIL SENT & SAVED (${wCount} WORDS)! <button onclick="completeStage(3)" class="mc-button mc-button-gold px-2 py-1 ml-2 text-[7px]">CLAIM DIPLOMA 🏆</button>`;
+        }
+
+        // ==========================================
+        // PROGRESSION & VICTORY
+        // ==========================================
+        function completeStage(num) {
+            playSound('success');
+            gameState.stageCompleted[num] = true;
+            if (num < 3) {
+                gameState.stageUnlocked = Math.max(gameState.stageUnlocked, num + 1);
+                showScreen('screenMap');
+            } else {
+                showScreen('screenVictory');
+            }
+        }
+
+        function initVictory() {
+            document.getElementById('vicPlayerName').textContent = gameState.playerName;
+            document.getElementById('vicThemeName').textContent = gameState.topicTitle;
+            const val = document.getElementById('emailBodyText').value;
+            document.getElementById('vicWordCount').textContent = countWords(val);
+
+            const stars = gameState.lives >= 4 ? "⭐⭐⭐" : (gameState.lives >= 2 ? "⭐⭐" : "⭐");
+            document.getElementById('starRatingDisplay').textContent = stars;
+
+            if (typeof window.loadHallOfFame === 'function') {
+                window.loadHallOfFame();
+            }
+            startConfetti();
+        }
+
+        function restartGame() {
+            playSound('click');
+            gameState.lives = 5;
+            gameState.stageUnlocked = 1;
+            gameState.stageCompleted = { 1: false, 2: false, 3: false };
+            updateLivesUI();
+            resetStage1();
+            showScreen('screenMap');
+        }
+
+        function startConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            const particles = [];
+            const colors = ['#f3a81a', '#388e3c', '#7cb5f9', '#d2a16d', '#ffffff', '#a855f7'];
+
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: Math.random() * 2 + 1,
+                    vx: Math.random() * 2 - 1
+                });
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.vy;
+                    p.x += p.vx;
+                    if (p.y > canvas.height) p.y = -10;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+                if (!document.getElementById('screenVictory').classList.contains('hidden')) {
+                    requestAnimationFrame(render);
+                }
+            }
+            render();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            showScreen('screenWelcome');
+        });
+    </script>
+</body>
+</html>
